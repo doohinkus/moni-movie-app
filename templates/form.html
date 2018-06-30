@@ -1,0 +1,21 @@
+<h1 class="text-center mt-5">Select a Company</h1>
+<div class="container">
+  <form action="{{ url_for('index') }}" method="POST">
+    <div class="form-group row text-center m-auto">
+      <div class="col-md-10 text-center m-auto col-sm-12">
+        <select class="custom-select mb-2 mr-sm-2" name="company">
+          {% for company in companies %}
+            {% if selected == company %}
+            <option value='{{ companies[company] }}' selected>{{ company }}</option>
+            {% else %}
+            <option value='{{ companies[company] }}'>{{ company }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2 col-sm-12">
+        <button type="submit" class="btn btn-primary btn-block sm-pt-3">Submit</button>
+      </div>
+    </div>
+  </form>
+</div>

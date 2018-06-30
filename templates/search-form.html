@@ -1,0 +1,51 @@
+<h1 class="text-center mt-5">Search Title</h1>
+<div class="container">
+  <form action="{{ url_for('search') }}" method="POST">
+    <div class="form-group row text-center m-auto">
+      <div class="col-md-10 text-center m-auto col-sm-12 mb-sm-3">
+        <input
+        type="text"
+        id="movie"
+        name="movie"
+        {% if movie !=0 %}
+          value="{{ movieTitle }}""
+        {% endif %}
+
+        class="w-100 p-1" />
+      </div>
+      <div class="col-md-2 col-sm-12">
+        <button type="submit" class="btn btn-primary btn-block">Submit</button>
+      </div>
+    </div>
+  </form>
+  <script>
+    $('#movie').on("keypress", function(e){
+      const url = `{{ auto_complete_url }} &query=${$(this).val()}`;
+         fetch(url)
+         .then(function(response) {
+           return response.json();
+         })
+         .then(function(data){
+           const list = data.results
+           .filter(result => result.original_title != undefined)
+           .map(result => result.original_title)
+           // console.log(list)
+           $( "#movie" ).autocomplete({
+             source: list,
+             minLength: 2,
+             select: function( event, ui ) {
+               // log( "Selected: " + ui.item.value + " aka " + ui.item.id );
+               $('#movie').value = ui.item.value;
+             }
+           });
+         });
+         if (e.keyCode == 13) {
+            $('form').submit();
+         }
+    });
+  </script>
+
+  {% include "results.html" %}
+
+
+</div>

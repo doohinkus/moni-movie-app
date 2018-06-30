@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+{% block content %}
+  <p><a href="javascript:history.go(-1)">Back</a></p>
+  <div class="container">
+    Companies:
+    {% for company in details.production_companies %}
+      <div class="row">
+
+          {{ company }}
+          <a href="https://api.themoviedb.org/3/discover/movie?api_key={{ params.api_key }}&certification_country=US&with_company={{ company.id }}&sort_by=popularity.desc">  {{ company.name }}</a>
+      
+      </div>
+    {% endfor %}
+    <!-- production_companies -->
+  </div>
+
+{% endblock %}
+{% block script %}
+
+{% endblock %}
