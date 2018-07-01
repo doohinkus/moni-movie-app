@@ -36,8 +36,12 @@ reverseLookup = {
 '47729':'STX Entertainment'
 }
 def makeRequest(url, params):
-    r = requests.get(url, params=params)
-    return json.loads(r.text)
+    try:
+        r = requests.get(url, params=params)
+        return json.loads(r.text)
+    except requests.exceptions.RequestException as e:
+        print e
+        sys.exit(1)
 # end shared stuff
 # routes ans stuff
 @app.route('/', methods=['GET', 'POST'])
@@ -64,15 +68,41 @@ def index():
           movies=json,
           reverseLookup=reverseLookup,
           companies=companies,
+          movieResults=True,
+          movieID=request.form["company"],
+          page='2',
+          pageDisplay='1',
           selected=reverseLookup[request.form["company"]]
           )
 
+@app.route('/<movieID>/<page>', methods=['GET'])
+def page(movieID, page):
+    movies=makeRequest('https://api.themoviedb.org/3/discover/movie?',
+      {
+       'api_key': key,
+       'certification_country': 'US',
+       'with_companies': movieID,
+       'page': page,
+       'sort_by': 'popularity.desc'
+      }
+    )
+    return render_template('movies.html',
+      movies=movies,
+      reverseLookup=reverseLookup,
+      companies=companies,
+      movieID=movieID,
+      page=int(page) + 1,
+      pageDisplay=int(page),
+      movieResults=True,
+      selected=reverseLookup[movieID]
+      )
 
 @app.route('/details/<movieID>', methods=['GET'])
 def details(movieID):
     url ="https://api.themoviedb.org/3/movie/"+movieID+"?api_key=" + key + "&language=en-US"
     r = requests.get(url)
     return r.text
+
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
@@ -114,6 +144,6 @@ def search():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=80)
+    app.run(host="0.0.0.0", port=80, threaded=True)
 else:
-    app.run(debug=True, host="0.0.0.0", port=8000)
+    app.run(debug=True, host="0.0.0.0", port=8000, threaded=True)
