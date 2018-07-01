@@ -4,6 +4,19 @@
   {% for company in companies %}
     companies.push("{{ companies[company] }}");
   {% endfor %}
+
+  function getCompanies(url, movieID){
+    fetch(url)
+      .then(function(res){
+        return res.json();
+      })
+      .then(function(myJson){
+        myJson.production_companies.forEach(company => {
+           const style = companies.indexOf(company.id.toString()) != -1 ? "text-success font-weight-bold text-center ml-1" : "ml-1 text-center text-secondary";
+          $(`#company-${movieID}`).append(` <span class="${style}"> ${company.name} </span> `);
+        });
+      });
+  }
   </script>
 
 {% for movie in movies.results %}
@@ -22,22 +35,11 @@
       </div>
       <p>{{ movie.overview }}</p>
       <!-- <p><a href="{{ url_for('details', movieID=movie.id) }}">{{ movie.id }}</a></p> -->
-      {% compress 'js' %}
+
       <script>
-      fetch('/details/{{ movie.id }}')
-        .then(function(res){
-          return res.json();
-        })
-        .then(function(myJson){
-          myJson.production_companies.forEach(company => {
-             console.log(company.id, companies.indexOf(company.id.toString()))
-             const style = companies.indexOf(company.id.toString()) != -1 ? "text-success font-weight-bold text-center ml-1" : " ml-1 text-center text-secondary";
-            $('#company-{{ movie.id }}').append(` <span class="${style}"> ${company.name} </span> `);
-          });
-        })
+         getCompanies('/details/{{ movie.id }}', {{ movie.id }});
       </script>
-      <script type="text/javascript" src="/static/js.js"></script>
-      {% endcompress %}
+
     </div>
   </div>
 {% endfor %}
