@@ -19,10 +19,14 @@
   }
   </script>
 {% if movieResults == True %}
+<!-- <h1>Pagination</h1>
 <h2> Page: {{ pageDisplay }} </h2>
-   <a href="javascript:history.back()" class="btn">Prev</a> <a href="{{ url_for('page', movieID=movieID, page=page) }}" class="btn">Next</a>
+  <a href="javascript:history.back()" class="btn">Prev</a>
+  <a href="{{ url_for('page', page=page, movieID=movieID) }}" class="btn">Next</a> -->
+
 {% endif %}
 {% for movie in movies.results %}
+
   <div class="row mt-3">
     <div class="col-md-4 text-center">
       {% if movie.poster_path != None %}
