@@ -28,4 +28,3 @@ python application.py
 ```
 * Open browser to http://localhost:80
 
-View live app: [Moni's Movie App](http://dockerflask-env.envsvnnirm.us-west-2.elasticbeanstalk.com/)
